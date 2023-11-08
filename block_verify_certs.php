@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+use block_verify_certs\verify_certificates_form;
+
 /**
  * Block verify_certs is defined here.
  *
@@ -27,7 +29,6 @@ class block_verify_certs extends block_base {
      * Initializes class member variables.
      */
     public function init() {
-        // Needed by Moodle to differentiate between blocks.
         $this->title = get_string('pluginname', 'block_verify_certs');
     }
 
@@ -37,6 +38,9 @@ class block_verify_certs extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
+        if (!has_capability('block/verify_certs:view', $this->context)) {
+            return null;
+        }
 
         if ($this->content !== null) {
             return $this->content;
@@ -48,15 +52,16 @@ class block_verify_certs extends block_base {
         }
 
         $this->content = new stdClass();
-        $this->content->items = array();
-        $this->content->icons = array();
+        $this->content->items = [];
+        $this->content->icons = [];
         $this->content->footer = '';
 
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         } else {
-            $text = 'Please define the content text in /blocks/verify_certs/block_verify_certs.php.';
-            $this->content->text = $text;
+            $pageurl = new moodle_url('/blocks/verify_certs/index.php');
+            $form = new verify_certificates_form($pageurl);
+            $this->content->text = $form->render();
         }
 
         return $this->content;
@@ -68,8 +73,6 @@ class block_verify_certs extends block_base {
      * The function is called immediately after init().
      */
     public function specialization() {
-
-        // Load user defined title and make sure it's never empty.
         if (empty($this->config->title)) {
             $this->title = get_string('pluginname', 'block_verify_certs');
         } else {
@@ -93,15 +96,5 @@ class block_verify_certs extends block_base {
      */
     public function has_config() {
         return true;
-    }
-
-    /**
-     * Sets the applicable formats for the block.
-     *
-     * @return string[] Array of pages and permissions.
-     */
-    public function applicable_formats() {
-        return array(
-        );
     }
 }

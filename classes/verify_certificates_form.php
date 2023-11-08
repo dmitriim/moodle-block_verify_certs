@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of the tool_certificate plugin for Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,24 +16,26 @@
 
 namespace block_verify_certs;
 
-use core_privacy\local\metadata\null_provider;
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir . '/formslib.php');
 
 /**
- * Privacy.
+ * Verification form.
  *
  * @package     block_verify_certs
  * @copyright   2023 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements null_provider {
-
+class verify_certificates_form extends \moodleform {
     /**
-     * Get the language string identifier with the component's language
-     * file to explain why this plugin stores no data.
-     *
-     * @return  string
+     * Form definition.
      */
-    public static function get_reason() : string {
-        return 'privacy:metadata';
+    public function definition() {
+        $mform =& $this->_form;
+
+        $mform->addElement('text', 'code', get_string('code', 'block_verify_certs'));
+        $mform->setType('code', PARAM_ALPHANUM);
+        $mform->addElement('submit', 'verify', get_string('verify', 'block_verify_certs'));
     }
 }
