@@ -1,5 +1,5 @@
-<a href="https://github.com/dmitriim/moodle-block_verify_certs/actions/workflows/ci.yml?query=branch%3Amaster">
-    <img src="https://github.com/dmitriim/moodle-block_verify_certs/workflows/ci/badge.svg?branch=master">
+<a href="https://github.com/dmitriim/moodle-block_verify_certs/actions/workflows/ci.yml?query=branch%3AMOODLE_401_STABLE">
+    <img src="https://github.com/dmitriim/moodle-block_verify_certs/workflows/ci/badge.svg?branch=MOODLE_401_STABLE">
 </a>
 
 # Verify certificates #
