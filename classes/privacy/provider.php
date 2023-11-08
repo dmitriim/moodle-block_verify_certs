@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,21 +12,28 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace block_verify_certs;
+
+use core_privacy\local\metadata\null_provider;
 
 /**
- * Plugin strings are defined here.
+ * Privacy.
  *
  * @package     block_verify_certs
- * @category    string
  * @copyright   2023 Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class provider implements null_provider {
 
-defined('MOODLE_INTERNAL') || die();
-
-$string['pluginname'] = 'Verify certificates';
-$string['privacy:metadata'] = 'Block verify certificates only shows data stored in other locations.';
-$string['verify_certs:addinstance'] = 'Add a verify certificates block';
-$string['verify_certs:myaddinstance'] = 'Add a new a verify certificates block to Dashboard';
-$string['verify_certs:view'] = 'View a verify certificates block ';
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
