@@ -1,3 +1,7 @@
+<a href="https://github.com/dmitriim/moodle-block_verify_certs/actions/workflows/ci.yml?query=branch%3Amaster">
+    <img src="https://github.com/dmitriim/moodle-block_verify_certs/workflows/ci/badge.svg?branch=master">
+</a>
+
 # Verify certificates #
 
 TODO Describe the plugin shortly here.
