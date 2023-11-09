@@ -23,6 +23,7 @@
  */
 
 use block_verify_certs\verify_certificates_form;
+use block_verify_certs\verify_factory;
 
 require_once(__DIR__ . '/../../config.php');
 
@@ -55,11 +56,6 @@ echo $OUTPUT->header();
 $form->display();
 $test = $form->get_data();
 if ($form->get_data() && !empty($code)) {
-    // TODO: verify and display results.
-    if (rand(0, 10) > 5) {
-        echo $OUTPUT->notification('Certificate verified', 'success');
-    } else {
-        echo $OUTPUT->notification('Certificate not verified', 'error');
-    }
+    echo verify_factory::verify_certificate($code);
 }
 echo $OUTPUT->footer();

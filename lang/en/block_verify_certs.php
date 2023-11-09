@@ -25,7 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['checkarchive'] = 'Check archived records';
+$string['checkarchive_help'] = 'If enabled archived records will be checked while verifying certificates.';
 $string['code'] = 'Code';
+$string['mod_coursecertificate']  = 'Course certificate';
+$string['mod_customcert'] = 'Custom certificate';
 $string['pluginname'] = 'Verify certificates';
 $string['privacy:metadata'] = 'Block verify certificates only shows data stored in other locations.';
 $string['verify'] = 'Verify';
