@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace block_verify_certs\local\block_verify_certs\certificates;
+use stdClass;
 
 /**
  * Certificate verifier for mod_customcert.
@@ -36,6 +37,7 @@ class mod_customcert extends base {
         if (!file_exists($CFG->dirroot . '/mod/customcert/version.php')) {
             return false;
         }
+
         return true;
     }
 
@@ -46,13 +48,41 @@ class mod_customcert extends base {
      * @return string|null should return verification as HTML string or null otherwise
      */
     public function verify_certificate(string $code): ?string {
-        global $OUTPUT;
-        // TODO: verify and display results.
-        if (rand(0, 10) > 5) {
-            return $OUTPUT->notification('Custom certificate verified', 'success');
-        } else {
-            return null;
+        global $DB, $OUTPUT, $PAGE, $USER;
+
+        $result = null;
+
+        $userfields = \mod_customcert\helper::get_all_user_name_fields('u');
+
+        $sql = "SELECT ci.id, u.id as userid, $userfields, co.id as courseid,
+                       co.fullname as coursefullname, c.id as certificateid,
+                       c.name as certificatename, c.verifyany
+                  FROM {customcert} c
+                  JOIN {customcert_issues} ci
+                    ON c.id = ci.customcertid
+                  JOIN {course} co
+                    ON c.course = co.id
+                  JOIN {user} u
+                    ON ci.userid = u.id
+                 WHERE ci.code = :code";
+
+        $issues = $DB->get_records_sql($sql, ['code' => $code]);
+
+        if (!empty($issues)) {
+            $issue = reset($issues);
+            if ($issue->userid == $USER->id) {
+                $results = new stdClass();
+                $results->success = true;
+                $results->issues = [$issue];
+                $renderer = $PAGE->get_renderer('mod_customcert');
+                $results = new \mod_customcert\output\verify_certificate_results($results);
+                $result = $renderer->render($results);
+            } else {
+                $result = $OUTPUT->notification(get_string('validcertificate', 'tool_certificate'), 'success');
+            }
         }
+
+        return $result;
     }
 
     /**
@@ -62,12 +92,24 @@ class mod_customcert extends base {
      * @return string|null should return verification as HTML string or null otherwise
      */
     public function verify_certificate_archive(string $code): ?string {
-        global $OUTPUT;
-        // TODO: verify and display results.
-        if (rand(0, 10) > 5) {
-            return $OUTPUT->notification('Custom certificate verified from archive', 'success');
-        } else {
+        global $CFG, $DB, $OUTPUT;
+
+        // Recompletion is not installed. There is no archive for the custom cert records.
+        if (!file_exists($CFG->dirroot . '/local/recompletion/version.php')) {
             return null;
         }
+
+        $sql = "SELECT ci.id, u.id as userid
+                  FROM {local_recompletion_ccert_is} ci
+                  JOIN {user} u
+                    ON ci.userid = u.id
+                 WHERE ci.code = :code";
+
+        if ($DB->record_exists_sql($sql, ['code' => $code])) {
+            return $OUTPUT->notification(get_string('validcertificate', 'tool_certificate'), 'success');
+        }
+
+        return null;
     }
+
 }

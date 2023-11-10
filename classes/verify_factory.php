@@ -82,7 +82,7 @@ class verify_factory {
             }
         }
 
-        return $OUTPUT->notification('Certificate not verified', 'error');
+        return $OUTPUT->notification(get_string('expiredcertificate', 'tool_certificate'), 'error');
     }
 
 }

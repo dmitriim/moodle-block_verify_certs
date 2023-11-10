@@ -51,13 +51,20 @@ class mod_coursecertificate extends base {
      * @return string|null should return verification as HTML string or null otherwise
      */
     public function verify_certificate(string $code): ?string {
-        global $OUTPUT;
-        // TODO: verify and display results.
-        if (rand(0, 10) > 5) {
-            return $OUTPUT->notification('Certificate verified', 'success');
-        } else {
-            return null;
+        global $OUTPUT, $USER;
+
+        $result = \tool_certificate\certificate::verify($code);
+
+        if ($result->success) {
+            if ($result->issue->userid == $USER->id) {
+                $results = new \tool_certificate\output\verify_certificate_results($result);
+                return $OUTPUT->render($results);
+            } else {
+                return $OUTPUT->notification(get_string('validcertificate', 'tool_certificate'), 'success');
+            }
         }
+
+        return null;
     }
 
     /**
@@ -67,12 +74,6 @@ class mod_coursecertificate extends base {
      * @return string|null should return verification as HTML string or null otherwise
      */
     public function verify_certificate_archive(string $code): ?string {
-        global $OUTPUT;
-        // TODO: verify and display results.
-        if (rand(0, 10) > 5) {
-            return $OUTPUT->notification('Certificate verified from archive', 'success');
-        } else {
-            return null;
-        }
+        return $this->verify_certificate($code);
     }
 }
