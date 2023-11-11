@@ -73,7 +73,7 @@ class mod_coursecertificate extends base {
     public function verify_certificate(string $code): ?string {
         global $OUTPUT, $USER;
 
-        if (!$this->is_enabled()) {
+        if (!$this->is_installed() || !$this->is_enabled()) {
             return null;
         }
 

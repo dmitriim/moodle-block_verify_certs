@@ -94,7 +94,7 @@ class mod_customcert extends base {
     public function verify_certificate(string $code): ?string {
         global $DB, $OUTPUT, $PAGE, $USER;
 
-        if (!$this->is_enabled()) {
+        if (!$this->is_installed() || !$this->is_enabled()) {
             return null;
         }
 
