@@ -16,6 +16,9 @@
 
 namespace block_verify_certs\local\block_verify_certs\certificates;
 
+use admin_settingpage;
+use admin_setting_heading;
+
 /**
  * Certificate verifier for mod_coursecertificate.
  *
@@ -24,6 +27,23 @@ namespace block_verify_certs\local\block_verify_certs\certificates;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_coursecertificate extends base {
+
+    /**
+     * Add site level settings for this certificate.
+     *
+     * @param admin_settingpage $settings
+     */
+    protected function add_extra_settings(admin_settingpage $settings): void {
+        global $OUTPUT;
+
+        $archiveinfo = $OUTPUT->notification(
+            get_string('checkarchive_info', 'block_verify_certs', $this->get_fullname()),
+            'info',
+            false
+        );
+        $name = 'block_verify_certs/' . $this->generate_config_name('checkarchive');
+        $settings->add(new admin_setting_heading($name, '', $archiveinfo));
+    }
 
     /**
      * Check if the certificate is installed.
@@ -53,6 +73,10 @@ class mod_coursecertificate extends base {
     public function verify_certificate(string $code): ?string {
         global $OUTPUT, $USER;
 
+        if (!$this->is_enabled()) {
+            return null;
+        }
+
         $result = \tool_certificate\certificate::verify($code);
 
         if ($result->success) {
@@ -65,15 +89,5 @@ class mod_coursecertificate extends base {
         }
 
         return null;
-    }
-
-    /**
-     * Verify certificate code in archive.
-     *
-     * @param string $code certificate code.
-     * @return string|null should return verification as HTML string or null otherwise
-     */
-    public function verify_certificate_archive(string $code): ?string {
-        return $this->verify_certificate($code);
     }
 }

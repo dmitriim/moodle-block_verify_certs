@@ -18,7 +18,8 @@ namespace block_verify_certs\local\block_verify_certs\certificates;
 
 use admin_setting_heading;
 use admin_settingpage;
-use coding_exception;
+use admin_setting_configcheckbox;
+use lang_string;
 
 /**
  * Base class for certificates.
@@ -58,26 +59,19 @@ abstract class base {
      *
      * @return string
      */
-    public function get_shortname(): string {
+    final public function get_shortname(): string {
         return str_replace(__NAMESPACE__ . '\\', '', static::class);
     }
 
     /**
-     * If support settings.
+     * A helper function to generate certificate specific config name based on provided name.
      *
-     * @return bool
-     */
-    public function support_settings(): bool {
-        return false;
-    }
-
-    /**
-     * Add site level settings for this certificate.
+     * @param string $name Config name.
      *
-     * @param admin_settingpage $settings
+     * @return string
      */
-    protected function add_settings(admin_settingpage $settings): void {
-        throw new coding_exception('Please implement add_settings method');
+    final protected function generate_config_name(string $name): string {
+        return $this->get_shortname() . '_' . $name;
     }
 
     /**
@@ -86,22 +80,38 @@ abstract class base {
      * @param admin_settingpage $settings
      */
     final public function settings(admin_settingpage $settings): void {
-        if ($this->support_settings()) {
-            $name = 'block_verify_certs/' . $this->get_shortname() . '_heading';
-            $settings->add(new admin_setting_heading($name, $this->get_fullname(), ''));
+        // Heading.
+        $name = 'block_verify_certs/' . $this->generate_config_name('heading');
+        $settings->add(new admin_setting_heading($name, $this->get_fullname(), ''));
 
-            $this->add_settings($settings);
-        }
+        // Mandatory setting for enable/disable.
+        $settings->add(new admin_setting_configcheckbox(
+            'block_verify_certs/' . $this->generate_config_name('enabled'),
+            new lang_string('enabled', 'block_verify_certs'),
+            new lang_string('enabled_help', 'block_verify_certs'),
+            1)
+        );
+
+        // Any extra settings that certificate can have.
+        $this->add_extra_settings($settings);
     }
 
     /**
-     * Verify certificate code in archive.
+     * Add site level settings for this certificate.
      *
-     * @param string $code certificate code.
-     * @return string|null should return verification as HTML string or null otherwise
+     * @param admin_settingpage $settings
      */
-    public function verify_certificate_archive(string $code): ?string {
-        return null;
+    protected function add_extra_settings(admin_settingpage $settings): void {
+
+    }
+
+    /**
+     * Check if the certificate is enabled.
+     *
+     * @return bool
+     */
+    final public function is_enabled() : bool {
+        return (bool) get_config('block_verify_certs', $this->generate_config_name('enabled'));
     }
 
     /**

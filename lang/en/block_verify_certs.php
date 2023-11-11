@@ -26,13 +26,17 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['checkarchive'] = 'Check archived records';
-$string['checkarchive_help'] = 'If enabled archived records will be checked while verifying certificates.';
+$string['checkarchive_help'] = 'If enabled, archived records will be checked as part of the verification process.';
+$string['checkarchive_info'] = 'For "{$a}" archived records will be checked as part of the verification process. There is no way to disabled that.';
 $string['code'] = 'Code';
+$string['enabled'] = 'Enabled';
+$string['enabled_help'] = 'If enabled, this certificate type will be included in the verification process. Other wise this certificate type will be skipped.';
 $string['expiredcertificate'] = 'This certificate has expired';
 $string['mod_coursecertificate']  = 'Course certificate';
 $string['mod_customcert'] = 'Custom certificate';
 $string['pluginname'] = 'Verify certificates';
 $string['privacy:metadata'] = 'Block verify certificates only shows data stored in other locations.';
+$string['recompletionmissing'] = 'Course recompletion plugin (local_recompletion) is not installed. Archiving for this type of certificate is not available.';
 $string['validcertificate'] = 'This certificate is valid';
 $string['verify'] = 'Verify';
 $string['verifycertificates'] = 'Verify certificates';

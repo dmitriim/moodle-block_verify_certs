@@ -15,6 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace block_verify_certs\local\block_verify_certs\certificates;
+
+use admin_settingpage;
+use admin_setting_configcheckbox;
+use lang_string;
 use stdClass;
 
 /**
@@ -25,6 +29,26 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_customcert extends base {
+
+    /**
+     * Add site level settings for this certificate.
+     *
+     * @param admin_settingpage $settings
+     */
+    protected function add_extra_settings(admin_settingpage $settings): void {
+        global $OUTPUT;
+
+        $archivewarning = '';
+        if (!$this->is_archive_available()) {
+            $archivewarning = $OUTPUT->notification(get_string('recompletionmissing', 'block_verify_certs'), 'warning', false);
+        }
+
+        $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('checkarchive'),
+            new lang_string('checkarchive', 'block_verify_certs'),
+            new lang_string('checkarchive_help', 'block_verify_certs') . $archivewarning,
+            1)
+        );
+    }
 
     /**
      * Check if the certificate is installed.
@@ -42,6 +66,26 @@ class mod_customcert extends base {
     }
 
     /**
+     * If archive is available.
+     *
+     * @return bool
+     */
+    protected function is_archive_available(): bool {
+        global $CFG;
+
+        return file_exists($CFG->dirroot . '/local/recompletion/version.php');
+    }
+
+    /**
+     * Should check archived records?
+     *
+     * @return bool
+     */
+    protected function should_verify_archive(): bool {
+        return (bool) get_config('block_verify_certs', $this->generate_config_name('checkarchive'));
+    }
+
+    /**
      * Verify certificate code.
      *
      * @param string $code certificate code.
@@ -49,6 +93,10 @@ class mod_customcert extends base {
      */
     public function verify_certificate(string $code): ?string {
         global $DB, $OUTPUT, $PAGE, $USER;
+
+        if (!$this->is_enabled()) {
+            return null;
+        }
 
         $result = null;
 
@@ -80,6 +128,8 @@ class mod_customcert extends base {
             } else {
                 $result = $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
             }
+        } else if ($this->should_verify_archive()) {
+            $result = $this->verify_certificate_archive($code);
         }
 
         return $result;
@@ -91,11 +141,11 @@ class mod_customcert extends base {
      * @param string $code certificate code.
      * @return string|null should return verification as HTML string or null otherwise
      */
-    public function verify_certificate_archive(string $code): ?string {
-        global $CFG, $DB, $OUTPUT;
+    protected function verify_certificate_archive(string $code): ?string {
+        global $DB, $OUTPUT;
 
         // Recompletion is not installed. There is no archive for the custom cert records.
-        if (!file_exists($CFG->dirroot . '/local/recompletion/version.php')) {
+        if (!$this->is_archive_available() ) {
             return null;
         }
 
@@ -111,5 +161,4 @@ class mod_customcert extends base {
 
         return null;
     }
-
 }

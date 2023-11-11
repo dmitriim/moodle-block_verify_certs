@@ -31,12 +31,6 @@ if ($hassiteconfig) {
     $settings = new admin_settingpage('block_verify_certs_settings', new lang_string('pluginname', 'block_verify_certs'));
 
     if ($ADMIN->fulltree) {
-        $settings->add(new admin_setting_configcheckbox('block_verify_certs/checkarchive',
-            new lang_string('checkarchive', 'block_verify_certs'),
-            new lang_string('checkarchive_help', 'block_verify_certs'),
-            0)
-        );
-
         foreach (verify_factory::get_installed_certificates() as $certificate) {
             $certificate->settings($settings);
         }

@@ -65,24 +65,21 @@ class verify_factory {
     public static function verify_certificate(string $code): string {
         global $OUTPUT;
 
-        $certificates = self::get_installed_certificates();
-        $checkarchive = get_config('block_verify_certs', 'checkarchive');
+        $result = $OUTPUT->notification(get_string('expiredcertificate', 'block_verify_certs'), 'error', false);
 
-        foreach ($certificates as $certificate) {
-            $verify = $certificate->verify_certificate($code);
-            if (!is_null($verify)) {
-                return $verify;
+        foreach (self::get_installed_certificates() as $certificate) {
+
+            if (!$certificate->is_enabled()) {
+                continue;
             }
 
-            if ($checkarchive) {
-                $verify = $certificate->verify_certificate_archive($code);
-                if (!is_null($verify)) {
-                    return $verify;
-                }
+            $verify = $certificate->verify_certificate($code);
+            if (!is_null($verify)) {
+                $result = $verify;
+                break;
             }
         }
 
-        return $OUTPUT->notification(get_string('expiredcertificate', 'block_verify_certs'), 'error', false);
+        return $result;
     }
-
 }
