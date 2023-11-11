@@ -82,7 +82,7 @@ class verify_factory {
             }
         }
 
-        return $OUTPUT->notification(get_string('expiredcertificate', 'tool_certificate'), 'error');
+        return $OUTPUT->notification(get_string('expiredcertificate', 'block_verify_certs'), 'error', false);
     }
 
 }

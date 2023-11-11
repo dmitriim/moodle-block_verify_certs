@@ -60,7 +60,7 @@ class mod_coursecertificate extends base {
                 $results = new \tool_certificate\output\verify_certificate_results($result);
                 return $OUTPUT->render($results);
             } else {
-                return $OUTPUT->notification(get_string('validcertificate', 'tool_certificate'), 'success');
+                return $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
             }
         }
 

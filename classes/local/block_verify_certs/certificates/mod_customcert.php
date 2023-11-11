@@ -78,7 +78,7 @@ class mod_customcert extends base {
                 $results = new \mod_customcert\output\verify_certificate_results($results);
                 $result = $renderer->render($results);
             } else {
-                $result = $OUTPUT->notification(get_string('validcertificate', 'tool_certificate'), 'success');
+                $result = $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
             }
         }
 
@@ -106,7 +106,7 @@ class mod_customcert extends base {
                  WHERE ci.code = :code";
 
         if ($DB->record_exists_sql($sql, ['code' => $code])) {
-            return $OUTPUT->notification(get_string('validcertificate', 'tool_certificate'), 'success');
+            return $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
         }
 
         return null;
