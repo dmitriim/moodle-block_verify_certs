@@ -23,13 +23,16 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use block_verify_certs\verify_factory;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
     $settings = new admin_settingpage('block_verify_certs_settings', new lang_string('pluginname', 'block_verify_certs'));
 
-    // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
     if ($ADMIN->fulltree) {
-        // TODO: Define actual plugin settings page and add it to the tree - {@link https://docs.moodle.org/dev/Admin_settings}.
+        foreach (verify_factory::get_installed_certificates() as $certificate) {
+            $certificate->settings($settings);
+        }
     }
 }
