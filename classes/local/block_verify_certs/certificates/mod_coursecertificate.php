@@ -111,7 +111,7 @@ class mod_coursecertificate extends base {
 
         $conditions = [
             'code' => $code,
-            'component' => 'mod_coursecertificate'
+            'component' => 'mod_coursecertificate',
         ];
 
         $sql = "SELECT ci.id, ci.templateid, ci.code, ci.emailed, ci.timecreated,
