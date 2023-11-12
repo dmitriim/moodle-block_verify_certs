@@ -11,6 +11,10 @@ The block allows to verify all certificates installed in your Moodle using a sin
 * Course certificate ([mod_coursecertificate](https://moodle.org/plugins/mod_coursecertificate))
 * Custom certificate ([mod_customcert](https://moodle.org/plugins/mod_customcert))
 
+## Archived certificates
+
+This plugin can verify certificates archived using  Course recompletion ([local_recompletion](https://moodle.org/plugins/local_recompletion))
+
 
 ## Installing via uploaded ZIP file ##
 
