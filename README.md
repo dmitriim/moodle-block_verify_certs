@@ -1,12 +1,16 @@
-<a href="https://github.com/dmitriim/moodle-block_verify_certs/actions/workflows/ci.yml?query=branch%3AMOODLE_401_STABLE">
-    <img src="https://github.com/dmitriim/moodle-block_verify_certs/workflows/ci/badge.svg?branch=MOODLE_401_STABLE">
-</a>
+<a href="https://github.com/dmitriim/moodle-block_verify_certs/actions"><img src="https://github.com/dmitriim/moodle-block_verify_certs/workflows/ci/badge.svg"></a>
 
-# Verify certificates #
+# Block Verify certificates #
 
-TODO Describe the plugin shortly here.
+The block allows to verify all certificates installed in your Moodle using a single form.
 
-TODO Provide more detailed description here.
+**Note**: This is different to existing [Verify Certificate Block](https://moodle.org/plugins/block_verify_certificate) 
+
+## Build-in supported certificates ##
+
+* Course certificate ([mod_coursecertificate](https://moodle.org/plugins/mod_coursecertificate))
+* Custom certificate ([mod_customcert](https://moodle.org/plugins/mod_customcert))
+
 
 ## Installing via uploaded ZIP file ##
 
@@ -30,6 +34,36 @@ Alternatively, you can run
     $ php admin/cli/upgrade.php
 
 to complete the installation from the command line.
+
+## Configuration
+
+Navigate to **Site administration > Blocks > Verify certificates** to configure the block.
+
+
+## Capabilities
+Users must have **View a verify certificates block (block/verify_certs:view)** capability to use this block.
+
+By default, this capability is granted to Authenticated user role.
+
+
+## Extending support for custom certificates
+
+Any plugin can easily implement a support for any other certificates by adding classes in the `local\block_verify_certs\certificates` namespace. Each certificate must extend the [base class](classes/local/block_verify_certs/certificates/base.php). As an example, block itself provides some certificates; the directory structure is as follows:
+
+
+```
+block_verify_certs
+└── classes
+    └── local
+        └── block_verify_certs
+           └── certificates
+                 ├── mod_coursecertificate.php
+                 └── mod_customcert.php
+```
+
+## Warm thanks 
+
+Thanks to **Terri Roshell (TN Fire Training Online)** for funding the development of this plugin.
 
 ## License ##
 

@@ -44,4 +44,4 @@ $string['verify'] = 'Verify';
 $string['verifycertificates'] = 'Verify certificates';
 $string['verify_certs:addinstance'] = 'Add a verify certificates block';
 $string['verify_certs:myaddinstance'] = 'Add a new a verify certificates block to Dashboard';
-$string['verify_certs:view'] = 'View a verify certificates block ';
+$string['verify_certs:view'] = 'View a verify certificates block';
