@@ -52,7 +52,7 @@ class mod_customcert extends base {
 
         $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('bypassverifyany'),
             new lang_string('bypassverifyany', 'block_verify_certs'),
-            new lang_string('bypassverifyany_help', 'block_verify_certs') . $archivewarning,
+            new lang_string('bypassverifyany_help', 'block_verify_certs'),
             1)
         );
     }
