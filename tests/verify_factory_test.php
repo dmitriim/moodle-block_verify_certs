@@ -35,6 +35,11 @@ class verify_factory_test extends \advanced_testcase {
 
         $certificates = verify_factory::get_installed_certificates();
 
+        foreach ($certificates as $certificate) {
+            $this->assertTrue($certificate->is_installed());
+        }
+
+        // Check installed for known certificates.
         if (file_exists($CFG->dirroot . '/mod/coursecertificate/version.php')
             && file_exists($CFG->dirroot . '/admin/tool/certificate/version.php')) {
             $this->assertArrayHasKey('mod_coursecertificate', $certificates);
@@ -49,6 +54,8 @@ class verify_factory_test extends \advanced_testcase {
      * Check all installed certificates have full name.
      */
     public function test_all_certificates_has_full_name() {
+        global $CFG;
+
         $certificates = verify_factory::get_installed_certificates();
         if (empty($certificates)) {
             $this->markTestSkipped();
@@ -56,6 +63,56 @@ class verify_factory_test extends \advanced_testcase {
 
         foreach ($certificates as $certificate) {
             $this->assertNotEmpty($certificate->get_fullname());
+        }
+
+        // Check full names for known certificates.
+        if (file_exists($CFG->dirroot . '/mod/coursecertificate/version.php')
+            && file_exists($CFG->dirroot . '/admin/tool/certificate/version.php')) {
+            $certificate = $certificates['mod_coursecertificate'];
+            $this->assertSame(get_string($certificate->get_shortname(), 'block_verify_certs'), $certificate->get_fullname());
+        }
+
+        if (file_exists($CFG->dirroot . '/mod/customcert/version.php')) {
+            $certificate = $certificates['mod_customcert'];
+            $this->assertSame(get_string($certificate->get_shortname(), 'block_verify_certs'), $certificate->get_fullname());
+        }
+    }
+
+    /**
+     * Test enabling disabling certificates.
+     */
+    public function test_enabling_disabling() {
+        $this->resetAfterTest();
+
+        $certificates = verify_factory::get_installed_certificates();
+        if (empty($certificates)) {
+            $this->markTestSkipped();
+        }
+
+        foreach ($certificates as $certificate) {
+            $name = $certificate->get_shortname() . '_enabled';
+            set_config($name, 1, 'block_verify_certs');
+            $this->assertTrue($certificate->is_enabled());
+        }
+
+        foreach ($certificates as $certificate) {
+            $name = $certificate->get_shortname() . '_enabled';
+            set_config($name, 0, 'block_verify_certs');
+            $this->assertFalse($certificate->is_enabled());
+        }
+    }
+
+    /**
+     * Test getting a short name.
+     */
+    public function test_getting_shortname() {
+        $certificates = verify_factory::get_installed_certificates();
+        if (empty($certificates)) {
+            $this->markTestSkipped();
+        }
+
+        foreach ($certificates as $shortname => $certificate) {
+            $this->assertSame($shortname, $certificate->get_shortname());
         }
     }
 }

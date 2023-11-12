@@ -18,6 +18,7 @@ namespace block_verify_certs\local\block_verify_certs\certificates;
 
 use admin_settingpage;
 use admin_setting_heading;
+use stdClass;
 
 /**
  * Certificate verifier for mod_coursecertificate.
@@ -77,7 +78,7 @@ class mod_coursecertificate extends base {
             return null;
         }
 
-        $result = \tool_certificate\certificate::verify($code);
+        $result = $this->verify($code);
 
         if ($result->success) {
             if ($result->issue->userid == $USER->id) {
@@ -89,5 +90,45 @@ class mod_coursecertificate extends base {
         }
 
         return null;
+    }
+
+    /**
+     * Verify if a certificate exists given a code.
+     *
+     * This is pretty much a copy of \tool_certificate\certificate::verify,
+     * but with extra filtering by component as we would like to verify only for mod_coursecertificate.
+     *
+     * @param string $code The code to verify
+     * @return \stdClass An structure with success bool attribute and the issue, if found
+     */
+    protected function verify(string $code): stdClass {
+        global $DB;
+
+        $result = (object)['success' => false];
+        if (!$code) {
+            return $result;
+        }
+
+        $conditions = [
+            'code' => $code,
+            'component' => 'mod_coursecertificate'
+        ];
+
+        $sql = "SELECT ci.id, ci.templateid, ci.code, ci.emailed, ci.timecreated,
+                       ci.expires, ci.data, ci.component, ci.courseid,
+                       ci.userid, ci.archived,
+                       t.name as certificatename,
+                       t.contextid
+                  FROM {tool_certificate_templates} t
+                  JOIN {tool_certificate_issues} ci
+                    ON t.id = ci.templateid
+                 WHERE ci.code = :code AND component = :component";
+
+        if ($issue = $DB->get_record_sql($sql, $conditions)) {
+            $result->success = true;
+            $result->issue = $issue;
+        }
+
+        return $result;
     }
 }
