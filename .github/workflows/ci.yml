@@ -9,3 +9,4 @@ jobs:
     with:
       enable_phpmd: true
       disable_phpcpd: true
+      extra_plugin_runners: moodle-plugin-ci add-plugin mdjnelson/moodle-mod_customcert --branch MOODLE_401_STABLE
