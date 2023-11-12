@@ -18,6 +18,7 @@ namespace block_verify_certs\local\block_verify_certs\certificates;
 
 use admin_settingpage;
 use admin_setting_configcheckbox;
+use context_system;
 use lang_string;
 use stdClass;
 
@@ -46,6 +47,12 @@ class mod_customcert extends base {
         $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('checkarchive'),
             new lang_string('checkarchive', 'block_verify_certs'),
             new lang_string('checkarchive_help', 'block_verify_certs') . $archivewarning,
+            1)
+        );
+
+        $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('bypassverifyany'),
+            new lang_string('bypassverifyany', 'block_verify_certs'),
+            new lang_string('bypassverifyany_help', 'block_verify_certs') . $archivewarning,
             1)
         );
     }
@@ -86,6 +93,30 @@ class mod_customcert extends base {
     }
 
     /**
+     * Can verify any certificate?
+     *
+     * @return bool
+     */
+    protected function can_verify_any(): bool {
+        $canverifyany = false;
+        $canbypassoriginallogic = (bool) get_config('block_verify_certs', $this->generate_config_name('bypassverifyany'));
+
+        if ($canbypassoriginallogic) {
+            $canverifyany = true;
+        } else {
+            // Replicating an original Custom certificate logic of verification.
+            $verifyallcertificates = get_config('customcert', 'verifyallcertificates');
+            $canverifyallcertificates = has_capability('mod/customcert:verifyallcertificates', context_system::instance());
+
+            if ($verifyallcertificates || $canverifyallcertificates) {
+                $canverifyany = true;
+            }
+        }
+
+        return $canverifyany;
+    }
+
+    /**
      * Verify certificate code.
      *
      * @param string $code certificate code.
@@ -113,6 +144,10 @@ class mod_customcert extends base {
                   JOIN {user} u
                     ON ci.userid = u.id
                  WHERE ci.code = :code";
+
+        if (!$this->can_verify_any()) {
+            $sql .= " AND c.verifyany = 1";
+        }
 
         $issues = $DB->get_records_sql($sql, ['code' => $code]);
 
