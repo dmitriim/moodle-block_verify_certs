@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['bypassverifyany'] = 'Allow to verify any certificate';
+$string['bypassverifyany_help'] = 'This setting enables verification of any available certificates bypassing logic of Custom certificate activity. <br/>Please note: archived records are always available for verification.';
 $string['checkarchive'] = 'Check archived records';
 $string['checkarchive_help'] = 'If enabled, archived records will be checked as part of the verification process.';
 $string['checkarchive_info'] = 'For "{$a}" archived records will be checked as part of the verification process. There is no way to disabled that.';
