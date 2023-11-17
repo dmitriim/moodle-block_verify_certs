@@ -16,6 +16,8 @@
 
 namespace block_verify_certs\local\block_verify_certs\certificates;
 
+use admin_settingpage;
+
 /**
  * Certificate verifier for mod_certificate.
  *
@@ -41,6 +43,15 @@ class mod_certificate extends base {
     }
 
     /**
+     * Add site level settings for this certificate.
+     *
+     * @param admin_settingpage $settings
+     */
+    protected function add_extra_settings(admin_settingpage $settings): void {
+        $this->add_display_info_settings($settings);
+    }
+
+    /**
      * Verify certificate code.
      *
      * @param string $code certificate code.
@@ -55,14 +66,16 @@ class mod_certificate extends base {
 
         $result = null;
 
-        $sql = "SELECT ci.code, ci.timecreated AS citimecreated,
+        $sql = "SELECT ci.code, ci.timecreated AS issueddate,
                        ci.certificateid, ci.userid,
-                       c.*, u.id AS id, u.*
+                       c.*, u.id AS id, u.*, cr.fullname AS coursefullname
                   FROM {certificate_issues} ci
             INNER JOIN {user} u
                     ON u.id = ci.userid
             INNER JOIN {certificate} c
                     ON c.id = ci.certificateid
+            INNER JOIN {course} cr
+                    ON c.course = cr.id
                  WHERE ci.code = ?";
 
         $certificates = $DB->get_records_sql($sql, [$code]);
@@ -70,6 +83,12 @@ class mod_certificate extends base {
         if (!empty($certificates)) {
             $certificate = reset($certificates);
             $result = $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
+
+            if ($this->should_display_info()) {
+                $certificate->userfullname = fullname($certificate);
+                $certificate->issueddate = userdate($certificate->issueddate);
+                $result .= $OUTPUT->render_from_template('block_verify_certs/verify_certificate_result', $certificate);
+            }
         }
 
         return $result;

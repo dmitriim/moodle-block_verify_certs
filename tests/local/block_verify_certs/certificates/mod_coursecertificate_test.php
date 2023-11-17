@@ -54,10 +54,29 @@ class mod_coursecertificate_test extends \advanced_testcase {
 
         $certificate = $generator->create_template((object)['name' => 'Certificate 1']);
 
-        $issuecoursecertififcate = $generator->issue($certificate, $user, time() + YEARSECS, [], 'mod_coursecertificate');
-        $issuequiz = $generator->issue($certificate, $user, time() + YEARSECS, [], 'mod_quiz');
+        $data = [
+            'coursefullname' => 'Test course',
+            'usefullname' => fullname($user),
+        ];
 
-        $this->assertNotEmpty($instance->verify_certificate($issuecoursecertififcate->code));
+        $issuecoursecertififcate = $generator->issue($certificate, $user, time() + YEARSECS, $data, 'mod_coursecertificate');
+        $issuequiz = $generator->issue($certificate, $user, time() + YEARSECS, $data, 'mod_quiz');
+
         $this->assertEmpty($instance->verify_certificate($issuequiz->code));
+
+        $result = $instance->verify_certificate($issuecoursecertififcate->code);
+        $this->assertNotEmpty($result);
+        $this->assertStringContainsString(fullname($user), $result);
+        $this->assertStringContainsString('Test course', $result);
+        $this->assertStringContainsString(userdate($issuecoursecertififcate->timecreated), $result);
+
+        // Check disabling display info.
+        $name = $instance->get_shortname() . '_displayinfo';
+        set_config($name, 0, 'block_verify_certs');
+        $result = $instance->verify_certificate($issuecoursecertififcate->code);
+        $this->assertNotEmpty($result);
+        $this->assertStringNotContainsString(fullname($user), $result);
+        $this->assertStringNotContainsString('Test course', $result);
+        $this->assertStringNotContainsString(userdate($issuecoursecertififcate->timecreated), $result);
     }
 }
