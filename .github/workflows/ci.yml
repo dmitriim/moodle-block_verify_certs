@@ -13,3 +13,4 @@ jobs:
         moodle-plugin-ci add-plugin mdjnelson/moodle-mod_customcert --branch MOODLE_401_STABLE;
         moodle-plugin-ci add-plugin moodleworkplace/moodle-tool_certificate --branch MOODLE_400_STABLE;
         moodle-plugin-ci add-plugin moodleworkplace/moodle-mod_coursecertificate --branch MOODLE_400_STABLE;
+        moodle-plugin-ci add-plugin mdjnelson/moodle-mod_certificate --branch master;
