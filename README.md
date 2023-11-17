@@ -10,6 +10,7 @@ The block allows to verify all certificates installed in your Moodle using a sin
 
 * Course certificate ([mod_coursecertificate](https://moodle.org/plugins/mod_coursecertificate))
 * Custom certificate ([mod_customcert](https://moodle.org/plugins/mod_customcert))
+* Certificate ([mod_certificate](https://moodle.org/plugins/mod_certificate))
 
 ## Archived certificates
 
