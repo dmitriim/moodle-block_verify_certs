@@ -37,6 +37,8 @@ class mod_coursecertificate extends base {
     protected function add_extra_settings(admin_settingpage $settings): void {
         global $OUTPUT;
 
+        $this->add_display_info_settings($settings);
+
         $archiveinfo = $OUTPUT->notification(
             get_string('checkarchive_info', 'block_verify_certs', $this->get_fullname()),
             'info',
@@ -85,7 +87,14 @@ class mod_coursecertificate extends base {
                 $results = new \tool_certificate\output\verify_certificate_results($result);
                 return $OUTPUT->render($results);
             } else {
-                return $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
+                $status = $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
+                if ($this->should_display_info()) {
+                    $data = json_decode($result->issue->data);
+                    $data->issueddate = userdate($result->issue->timecreated);
+                    $status .= $OUTPUT->render_from_template('block_verify_certs/verify_certificate_result', $data);
+                }
+
+                return $status;
             }
         }
 

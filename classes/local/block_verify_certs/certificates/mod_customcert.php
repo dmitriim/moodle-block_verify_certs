@@ -39,6 +39,8 @@ class mod_customcert extends base {
     protected function add_extra_settings(admin_settingpage $settings): void {
         global $OUTPUT;
 
+        $this->add_display_info_settings($settings);
+
         $archivewarning = '';
         if (!$this->is_archive_available()) {
             $archivewarning = $OUTPUT->notification(get_string('recompletionmissing', 'block_verify_certs'), 'warning', false);
@@ -135,7 +137,7 @@ class mod_customcert extends base {
 
         $sql = "SELECT ci.id, u.id as userid, $userfields, co.id as courseid,
                        co.fullname as coursefullname, c.id as certificateid,
-                       c.name as certificatename, c.verifyany
+                       c.name as certificatename, c.verifyany, ci.timecreated
                   FROM {customcert} c
                   JOIN {customcert_issues} ci
                     ON c.id = ci.customcertid
@@ -162,6 +164,12 @@ class mod_customcert extends base {
                 $result = $renderer->render($results);
             } else {
                 $result = $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
+
+                if ($this->should_display_info()) {
+                    $issue->userfullname = fullname($issue);
+                    $issue->issueddate = userdate($issue->timecreated);
+                    $result .= $OUTPUT->render_from_template('block_verify_certs/verify_certificate_result', $issue);
+                }
             }
         } else if ($this->should_verify_archive()) {
             $result = $this->verify_certificate_archive($code);
@@ -184,16 +192,34 @@ class mod_customcert extends base {
             return null;
         }
 
-        $sql = "SELECT ci.id, u.id as userid
+        $result = null;
+
+        $userfields = \mod_customcert\helper::get_all_user_name_fields('u');
+        $sql = "SELECT ci.id, u.* as userid, $userfields,
+                       ci.timecreated, ci.course
                   FROM {local_recompletion_ccert_is} ci
                   JOIN {user} u
                     ON ci.userid = u.id
                  WHERE ci.code = :code";
 
-        if ($DB->record_exists_sql($sql, ['code' => $code])) {
-            return $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
+        $issues = $DB->get_records_sql($sql, ['code' => $code]);
+
+        if (!empty($issues)) {
+            $result = $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
+
+            if ($this->should_display_info()) {
+                $issue = reset($issues);
+
+                $course = $DB->get_record('course', ['id' => $issue->course]);
+
+                $issue->userfullname = fullname($issue);
+                $issue->issueddate = userdate($issue->timecreated);
+                $issue->coursefullname = !empty($course->fullname) ? $course->fullname : '';
+
+                $result .= $OUTPUT->render_from_template('block_verify_certs/verify_certificate_result', $issue);
+            }
         }
 
-        return null;
+        return $result;
     }
 }

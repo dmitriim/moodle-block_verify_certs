@@ -97,6 +97,20 @@ abstract class base {
     }
 
     /**
+     * Add extra setting to enable/disable extra information about certificate.
+     *
+     * @param \admin_settingpage $settings
+     */
+    protected function add_display_info_settings(admin_settingpage $settings): void {
+        $settings->add(new admin_setting_configcheckbox(
+            'block_verify_certs/' . $this->generate_config_name('displayinfo'),
+            new lang_string('displayinfo', 'block_verify_certs'),
+            new lang_string('displayinfo_help', 'block_verify_certs'),
+            1)
+        );
+    }
+
+    /**
      * Add site level settings for this certificate.
      *
      * @param admin_settingpage $settings
@@ -112,6 +126,15 @@ abstract class base {
      */
     final public function is_enabled() : bool {
         return (bool) get_config('block_verify_certs', $this->generate_config_name('enabled'));
+    }
+
+    /**
+     * Check if should display extra information about certificate.
+     *
+     * @return bool
+     */
+    public function should_display_info(): bool {
+        return (bool) get_config('block_verify_certs', $this->generate_config_name('displayinfo'));
     }
 
     /**

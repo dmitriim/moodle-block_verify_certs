@@ -55,14 +55,30 @@ class mod_customcert_test extends \advanced_testcase {
         // Not existing code can't be verified.
         $this->assertEmpty($instance->verify_certificate($code));
 
-        // Issue a certificate with a known code.
+        // Issue a certificate with a known code and date.
+        $now = time();
         $issue = (object) [
             'userid' => $user->id,
             'customcertid' => $customcert->id,
             'code' => $code,
+            'timecreated' => $now,
         ];
+
         $DB->insert_record('customcert_issues', $issue);
-        $this->assertNotEmpty($instance->verify_certificate($code));
+        $result = $instance->verify_certificate($code);
+        $this->assertNotEmpty($result);
+        $this->assertStringContainsString(fullname($user), $result);
+        $this->assertStringContainsString($course->fullname, $result);
+        $this->assertStringContainsString(userdate($now), $result);
+
+        // Check disabling display info.
+        $name = $instance->get_shortname() . '_displayinfo';
+        set_config($name, 0, 'block_verify_certs');
+        $result = $instance->verify_certificate($code);
+        $this->assertNotEmpty($result);
+        $this->assertStringNotContainsString(fullname($user), $result);
+        $this->assertStringNotContainsString($course->fullname, $result);
+        $this->assertStringNotContainsString(userdate($now), $result);
 
         // User can verify certificate as bypassing original logic is enabled by default.
         $this->setUser($user);
