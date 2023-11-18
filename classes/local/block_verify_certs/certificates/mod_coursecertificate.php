@@ -121,6 +121,7 @@ class mod_coursecertificate extends base {
         $conditions = [
             'code' => $code,
             'component' => 'mod_coursecertificate',
+            'now' => time(),
         ];
 
         $sql = "SELECT ci.id, ci.templateid, ci.code, ci.emailed, ci.timecreated,
@@ -131,7 +132,7 @@ class mod_coursecertificate extends base {
                   FROM {tool_certificate_templates} t
                   JOIN {tool_certificate_issues} ci
                     ON t.id = ci.templateid
-                 WHERE ci.code = :code AND component = :component";
+                 WHERE ci.code = :code AND component = :component AND expires > :now";
 
         if ($issue = $DB->get_record_sql($sql, $conditions)) {
             $result->success = true;

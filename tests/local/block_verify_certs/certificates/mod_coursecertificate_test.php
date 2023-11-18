@@ -61,8 +61,10 @@ class mod_coursecertificate_test extends \advanced_testcase {
 
         $issuecoursecertififcate = $generator->issue($certificate, $user, time() + YEARSECS, $data, 'mod_coursecertificate');
         $issuequiz = $generator->issue($certificate, $user, time() + YEARSECS, $data, 'mod_quiz');
+        $expiredcoursecertififcate = $generator->issue($certificate, $user, time() - YEARSECS, $data, 'mod_coursecertificate');
 
         $this->assertEmpty($instance->verify_certificate($issuequiz->code));
+        $this->assertEmpty($instance->verify_certificate($expiredcoursecertififcate->code));
 
         $result = $instance->verify_certificate($issuecoursecertififcate->code);
         $this->assertNotEmpty($result);
