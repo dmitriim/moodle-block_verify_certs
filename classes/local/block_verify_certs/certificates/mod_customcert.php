@@ -195,7 +195,7 @@ class mod_customcert extends base {
         $result = null;
 
         $userfields = \mod_customcert\helper::get_all_user_name_fields('u');
-        $sql = "SELECT ci.id, u.* as userid, $userfields,
+        $sql = "SELECT ci.id, u.id as userid, $userfields,
                        ci.timecreated, ci.course
                   FROM {local_recompletion_ccert_is} ci
                   JOIN {user} u
