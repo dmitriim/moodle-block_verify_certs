@@ -108,4 +108,57 @@ class mod_customcert_test extends \advanced_testcase {
         $this->assertFalse($instance->is_enabled());
         $this->assertEmpty($instance->verify_certificate($code));
     }
+
+    /**
+     * Test verification of archived certificate..
+     */
+    public function test_verification_archived() {
+        global $CFG, $DB;
+
+        if (!file_exists($CFG->dirroot . '/mod/customcert/version.php')) {
+            $this->markTestSkipped();
+        }
+
+        if (!file_exists($CFG->dirroot . '/local/recompletion/version.php')) {
+            $this->markTestSkipped();
+        }
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $user = $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course();
+        $customcert = $this->getDataGenerator()->create_module('customcert', ['course' => $course->id]);
+        $code = 'ABCDEFG-1';
+
+        $instance = mod_customcert::get_instance();
+
+        $this->assertTrue($instance->is_installed());
+        $this->assertTrue($instance->is_enabled());
+
+        // Not existing code can't be verified.
+        $this->assertEmpty($instance->verify_certificate($code));
+
+        // Issue an archived certificate with a known code and date.
+        $now = time();
+        $issue = (object) [
+            'userid' => $user->id,
+            'customcertid' => $customcert->id,
+            'code' => $code,
+            'timecreated' => $now,
+            'course' => $course->id,
+        ];
+
+        $DB->insert_record('local_recompletion_ccert_is', $issue);
+        $result = $instance->verify_certificate($code);
+        $this->assertNotEmpty($result);
+        $this->assertStringContainsString(fullname($user), $result);
+        $this->assertStringContainsString($course->fullname, $result);
+        $this->assertStringContainsString(userdate($now), $result);
+
+        // Disable checking archived records.
+        $name = $instance->get_shortname() . '_checkarchive';
+        set_config($name, 0, 'block_verify_certs');
+        $this->assertEmpty($instance->verify_certificate($code));
+    }
 }
