@@ -84,4 +84,67 @@ class mod_certificate_test extends \advanced_testcase {
         $this->assertFalse($instance->is_enabled());
         $this->assertEmpty($instance->verify_certificate($code));
     }
+
+    /**
+     * Test displaying different date depending on a matchprintdate setting.
+     */
+    public function test_matching_date() {
+        global $CFG, $DB;
+
+        if (!file_exists($CFG->dirroot . '/mod/customcert/version.php')) {
+            $this->markTestSkipped();
+        }
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $user = $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course();
+
+        // Create certificate activity and set print date as day of course completion.
+        $certificate = $this->getDataGenerator()->create_module('certificate', ['course' => $course->id, 'printdate' => 2]);
+
+        // Insert completion record.
+        $timecompleted = time() - YEARSECS;
+        $DB->insert_record('course_completions', (object) [
+            'userid' => $user->id,
+            'course' => $course->id,
+            'timecompleted' => $timecompleted,
+        ]);
+
+        $code = 'ABCDEFG-1';
+
+        $instance = mod_certificate::get_instance();
+
+        $this->assertTrue($instance->is_installed());
+        $this->assertTrue($instance->is_enabled());
+
+        // Not existing code can't be verified.
+        $this->assertEmpty($instance->verify_certificate($code));
+
+        // Issue a certificate with a known code and date.
+        $now = time();
+        $DB->insert_record('certificate_issues', (object) [
+            'userid' => $user->id,
+            'certificateid' => $certificate->id,
+            'code' => $code,
+            'timecreated' => $now,
+        ]);
+
+        // Confirm certificate date matches printed date.
+        $result = $instance->verify_certificate($code);
+        $this->assertNotEmpty($result);
+        $this->assertStringContainsString(fullname($user), $result);
+        $this->assertStringContainsString($course->fullname, $result);
+        $this->assertStringContainsString(userdate($timecompleted), $result);
+
+        // Disable matching printed date and confirm it's matching issues date.
+        $name = $instance->get_shortname() . '_matchprintdate';
+        set_config($name, 0, 'block_verify_certs');
+        $result = $instance->verify_certificate($code);
+        $this->assertNotEmpty($result);
+        $this->assertStringContainsString(fullname($user), $result);
+        $this->assertStringContainsString($course->fullname, $result);
+        $this->assertStringContainsString(userdate($now), $result);
+    }
 }
