@@ -132,7 +132,7 @@ class mod_coursecertificate extends base {
                   FROM {tool_certificate_templates} t
                   JOIN {tool_certificate_issues} ci
                     ON t.id = ci.templateid
-                 WHERE ci.code = :code AND component = :component AND expires > :now";
+                 WHERE ci.code = :code AND component = :component AND (expires = 0 OR expires > :now)";
 
         if ($issue = $DB->get_record_sql($sql, $conditions)) {
             $result->success = true;

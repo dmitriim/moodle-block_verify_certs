@@ -62,6 +62,7 @@ class mod_coursecertificate_test extends \advanced_testcase {
         $issuecoursecertififcate = $generator->issue($certificate, $user, time() + YEARSECS, $data, 'mod_coursecertificate');
         $issuequiz = $generator->issue($certificate, $user, time() + YEARSECS, $data, 'mod_quiz');
         $expiredcoursecertififcate = $generator->issue($certificate, $user, time() - YEARSECS, $data, 'mod_coursecertificate');
+        $neverexpiredcertififcate = $generator->issue($certificate, $user, 0, $data, 'mod_coursecertificate');
 
         $this->assertEmpty($instance->verify_certificate($issuequiz->code));
         $this->assertEmpty($instance->verify_certificate($expiredcoursecertififcate->code));
@@ -71,6 +72,12 @@ class mod_coursecertificate_test extends \advanced_testcase {
         $this->assertStringContainsString(fullname($user), $result);
         $this->assertStringContainsString('Test course', $result);
         $this->assertStringContainsString(userdate($issuecoursecertififcate->timecreated), $result);
+
+        $result = $instance->verify_certificate($neverexpiredcertififcate->code);
+        $this->assertNotEmpty($result);
+        $this->assertStringContainsString(fullname($user), $result);
+        $this->assertStringContainsString('Test course', $result);
+        $this->assertStringContainsString(userdate($neverexpiredcertififcate->timecreated), $result);
 
         // Check disabling display info.
         $name = $instance->get_shortname() . '_displayinfo';
