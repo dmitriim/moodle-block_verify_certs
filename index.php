@@ -54,7 +54,6 @@ if ($code) {
 $PAGE->set_heading($heading);
 echo $OUTPUT->header();
 $form->display();
-$test = $form->get_data();
 if ($form->get_data() && !empty($code)) {
     echo verify_factory::verify_certificate($code);
 }
