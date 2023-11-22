@@ -52,7 +52,20 @@ class mod_certificate extends base {
      * @param admin_settingpage $settings
      */
     protected function add_extra_settings(admin_settingpage $settings): void {
+        global $OUTPUT;
+
         $this->add_display_info_settings($settings);
+
+        $archivewarning = '';
+        if (!$this->is_archive_available()) {
+            $archivewarning = $OUTPUT->notification(get_string('recompletionmissing', 'block_verify_certs'), 'warning', false);
+        }
+
+        $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('checkarchive'),
+                new lang_string('checkarchive', 'block_verify_certs'),
+                new lang_string('checkarchive_help', 'block_verify_certs') . $archivewarning,
+                1)
+        );
 
         $settings->add(new admin_setting_configcheckbox(
             'block_verify_certs/' . $this->generate_config_name('matchprintdate'),
@@ -113,6 +126,52 @@ class mod_certificate extends base {
                 $certificate->issueddate = userdate($issuedate);
                 $result .= $OUTPUT->render_from_template('block_verify_certs/verify_certificate_result', $certificate);
             }
+        } else if ($this->should_verify_archive()) {
+            $result = $this->verify_certificate_archive($code);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Verify certificate code in archive.
+     *
+     * @param string $code certificate code.
+     * @return string|null should return verification as HTML string or null otherwise
+     */
+    protected function verify_certificate_archive(string $code): ?string {
+        global $DB, $OUTPUT, $USER;
+
+        if (!$this->is_archive_available() ) {
+            return null;
+        }
+
+        $result = null;
+
+        $userfields = implode(',', fields::get_name_fields());
+
+        $sql = "SELECT ci.id, u.id as userid, $userfields,
+                       ci.timecreated, ci.certificateid, ci.printdate, ci.course
+                  FROM {local_recompletion_cert} ci
+                  JOIN {user} u
+                    ON ci.userid = u.id
+                 WHERE ci.code = :code";
+
+        $certificates = $DB->get_records_sql($sql, ['code' => $code]);
+
+        if (!empty($certificates)) {
+            $certificate = reset($certificates);
+            $result = $OUTPUT->notification(get_string('validcertificate', 'block_verify_certs'), 'success', false);
+
+            if ($USER->id == $certificate->userid || $this->should_display_info()) {
+                $course = $DB->get_record('course', ['id' => $certificate->course]);
+
+                $certificate->userfullname = fullname($certificate);
+                $certificate->coursefullname = !empty($course->fullname) ? $course->fullname : '';
+                $issueddate = $this->should_match_print_date() ? $certificate->printdate : $certificate->timecreated;
+                $certificate->issueddate = userdate($issueddate);
+                $result .= $OUTPUT->render_from_template('block_verify_certs/verify_certificate_result', $certificate);
+            }
         }
 
         return $result;
@@ -125,6 +184,26 @@ class mod_certificate extends base {
      */
     protected function should_match_print_date(): bool {
         return (bool) get_config('block_verify_certs', $this->generate_config_name('matchprintdate'));
+    }
+
+    /**
+     * If archive is available.
+     *
+     * @return bool
+     */
+    protected function is_archive_available(): bool {
+        global $CFG;
+
+        return file_exists($CFG->dirroot . '/local/recompletion/version.php');
+    }
+
+    /**
+     * Should check archived records?
+     *
+     * @return bool
+     */
+    protected function should_verify_archive(): bool {
+        return (bool) get_config('block_verify_certs', $this->generate_config_name('checkarchive'));
     }
 
     /**
