@@ -20,6 +20,7 @@ use admin_setting_heading;
 use admin_settingpage;
 use admin_setting_configcheckbox;
 use lang_string;
+use ReflectionClass;
 
 /**
  * Base class for certificates.
@@ -60,7 +61,9 @@ abstract class base {
      * @return string
      */
     final public function get_shortname(): string {
-        return str_replace(__NAMESPACE__ . '\\', '', static::class);
+        $reflector = new ReflectionClass(static::class);
+
+        return $reflector->getShortName();
     }
 
     /**
