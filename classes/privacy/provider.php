@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace block_verify_certs;
+namespace block_verify_certs\privacy;
 
 use core_privacy\local\metadata\null_provider;
 
