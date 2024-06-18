@@ -10,8 +10,8 @@ jobs:
       enable_phpmd: true
       disable_phpcpd: true
       extra_plugin_runners: |
-        moodle-plugin-ci add-plugin mdjnelson/moodle-mod_customcert --branch MOODLE_401_STABLE;
+        moodle-plugin-ci add-plugin mdjnelson/moodle-mod_customcert --branch MOODLE_404_STABLE;
         moodle-plugin-ci add-plugin moodleworkplace/moodle-tool_certificate --branch MOODLE_400_STABLE;
         moodle-plugin-ci add-plugin moodleworkplace/moodle-mod_coursecertificate --branch MOODLE_400_STABLE;
         moodle-plugin-ci add-plugin mdjnelson/moodle-mod_certificate --branch master;
-        moodle-plugin-ci add-plugin danmarsden/moodle-local_recompletion --branch MOODLE_401_STABLE;
+        moodle-plugin-ci add-plugin danmarsden/moodle-local_recompletion --branch MOODLE_403_STABLE;

@@ -16,6 +16,14 @@ The block allows to verify all certificates installed in your Moodle using a sin
 
 This plugin can verify certificates archived using  Course recompletion ([local_recompletion](https://moodle.org/plugins/local_recompletion))
 
+Branches
+--------
+The following git branches are currently supported:
+
+| Moodle version  | Branch            |
+|-----------------|-------------------|
+| Moodle 4.1 - 4.3 | MOODLE_401_STABLE |
+| Moodle 4.4      | MOODLE_404_STABLE |
 
 ## Installing via uploaded ZIP file ##
 
