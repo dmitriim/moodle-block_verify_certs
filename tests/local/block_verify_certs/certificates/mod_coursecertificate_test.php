@@ -25,12 +25,12 @@ namespace block_verify_certs\local\block_verify_certs\certificates;
  *
  * @covers \block_verify_certs\local\block_verify_certs\certificates\mod_coursecertificate
  */
-class mod_coursecertificate_test extends \advanced_testcase {
+final class mod_coursecertificate_test extends \advanced_testcase {
 
     /**
      * Test verification logic.
      */
-    public function test_verification() {
+    public function test_verification(): void {
         global $CFG;
 
         if (!file_exists($CFG->dirroot . '/mod/coursecertificate/version.php')) {

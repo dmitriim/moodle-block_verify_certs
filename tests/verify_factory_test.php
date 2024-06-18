@@ -25,12 +25,12 @@ namespace block_verify_certs;
  *
  * @covers \block_verify_certs\verify_factory
  */
-class verify_factory_test extends \advanced_testcase {
+final class verify_factory_test extends \advanced_testcase {
 
     /**
      * Get installed certificates.
      */
-    public function test_get_installed_certificates() {
+    public function test_get_installed_certificates(): void {
         global $CFG;
 
         $certificates = verify_factory::get_installed_certificates();
@@ -53,7 +53,7 @@ class verify_factory_test extends \advanced_testcase {
     /**
      * Check all installed certificates have full name.
      */
-    public function test_all_certificates_has_full_name() {
+    public function test_all_certificates_has_full_name(): void {
         global $CFG;
 
         $certificates = verify_factory::get_installed_certificates();
@@ -81,7 +81,7 @@ class verify_factory_test extends \advanced_testcase {
     /**
      * Test enabling disabling certificates.
      */
-    public function test_enabling_disabling() {
+    public function test_enabling_disabling(): void {
         $this->resetAfterTest();
 
         $certificates = verify_factory::get_installed_certificates();
@@ -105,7 +105,7 @@ class verify_factory_test extends \advanced_testcase {
     /**
      * Test getting a short name.
      */
-    public function test_getting_shortname() {
+    public function test_getting_shortname(): void {
         $certificates = verify_factory::get_installed_certificates();
         if (empty($certificates)) {
             $this->markTestSkipped();

@@ -27,12 +27,12 @@ use context_system;
  *
  * @covers \block_verify_certs\local\block_verify_certs\certificates\mod_customcert
  */
-class mod_customcert_test extends \advanced_testcase {
+final class mod_customcert_test extends \advanced_testcase {
 
     /**
      * Test verification logic.
      */
-    public function test_verification() {
+    public function test_verification(): void {
         global $CFG, $DB;
 
         if (!file_exists($CFG->dirroot . '/mod/customcert/version.php')) {
@@ -112,7 +112,7 @@ class mod_customcert_test extends \advanced_testcase {
     /**
      * Test verification of archived certificate..
      */
-    public function test_verification_archived() {
+    public function test_verification_archived(): void {
         global $CFG, $DB;
 
         if (!file_exists($CFG->dirroot . '/mod/customcert/version.php')) {

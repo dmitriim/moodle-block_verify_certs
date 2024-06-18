@@ -25,12 +25,12 @@ namespace block_verify_certs\local\block_verify_certs\certificates;
  *
  * @covers \block_verify_certs\local\block_verify_certs\certificates\mod_certificate
  */
-class mod_certificate_test extends \advanced_testcase {
+final class mod_certificate_test extends \advanced_testcase {
 
     /**
      * Test verification logic.
      */
-    public function test_verification() {
+    public function test_verification(): void {
         global $CFG, $DB;
 
         if (!file_exists($CFG->dirroot . '/mod/certificate/version.php')) {
@@ -88,7 +88,7 @@ class mod_certificate_test extends \advanced_testcase {
     /**
      * Test displaying different date depending on a matchprintdate setting.
      */
-    public function test_matching_date() {
+    public function test_matching_date(): void {
         global $CFG, $DB;
 
         if (!file_exists($CFG->dirroot . '/mod/certificate/version.php')) {
@@ -151,7 +151,7 @@ class mod_certificate_test extends \advanced_testcase {
     /**
      * Test verification of archived certificate..
      */
-    public function test_verification_archived() {
+    public function test_verification_archived(): void {
         global $CFG, $DB;
 
         if (!file_exists($CFG->dirroot . '/mod/certificate/version.php')) {

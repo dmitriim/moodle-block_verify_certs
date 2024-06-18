@@ -127,7 +127,7 @@ abstract class base {
      *
      * @return bool
      */
-    final public function is_enabled() : bool {
+    final public function is_enabled(): bool {
         return (bool) get_config('block_verify_certs', $this->generate_config_name('enabled'));
     }
 
