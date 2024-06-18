@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_verify_certs';
-$plugin->release = 2023112200;
-$plugin->version = 2023112200;
-$plugin->requires = 2022112800;
+$plugin->release = 2024061800;
+$plugin->version = 2024061800;
+$plugin->requires = 2024042200;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->supported = [404, 404];
