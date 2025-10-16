@@ -26,7 +26,6 @@ namespace block_verify_certs;
  * @covers \block_verify_certs\verify_factory
  */
 final class verify_factory_test extends \advanced_testcase {
-
     /**
      * Get installed certificates.
      */
@@ -40,8 +39,10 @@ final class verify_factory_test extends \advanced_testcase {
         }
 
         // Check installed for known certificates.
-        if (file_exists($CFG->dirroot . '/mod/coursecertificate/version.php')
-            && file_exists($CFG->dirroot . '/admin/tool/certificate/version.php')) {
+        if (
+            file_exists($CFG->dirroot . '/mod/coursecertificate/version.php')
+            && file_exists($CFG->dirroot . '/admin/tool/certificate/version.php')
+        ) {
             $this->assertArrayHasKey('mod_coursecertificate', $certificates);
         }
 
@@ -66,8 +67,10 @@ final class verify_factory_test extends \advanced_testcase {
         }
 
         // Check full names for known certificates.
-        if (file_exists($CFG->dirroot . '/mod/coursecertificate/version.php')
-            && file_exists($CFG->dirroot . '/admin/tool/certificate/version.php')) {
+        if (
+            file_exists($CFG->dirroot . '/mod/coursecertificate/version.php')
+            && file_exists($CFG->dirroot . '/admin/tool/certificate/version.php')
+        ) {
             $certificate = $certificates['mod_coursecertificate'];
             $this->assertSame(get_string($certificate->get_shortname(), 'block_verify_certs'), $certificate->get_fullname());
         }

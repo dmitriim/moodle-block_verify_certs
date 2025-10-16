@@ -26,7 +26,6 @@ namespace block_verify_certs\local\block_verify_certs\certificates;
  * @covers \block_verify_certs\local\block_verify_certs\certificates\mod_coursecertificate
  */
 final class mod_coursecertificate_test extends \advanced_testcase {
-
     /**
      * Test verification logic.
      */

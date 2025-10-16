@@ -30,7 +30,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_customcert extends base {
-
     /**
      * Add site level settings for this certificate.
      *
@@ -46,17 +45,19 @@ class mod_customcert extends base {
             $archivewarning = $OUTPUT->notification(get_string('recompletionmissing', 'block_verify_certs'), 'warning', false);
         }
 
-        $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('checkarchive'),
+        $settings->add(new admin_setting_configcheckbox(
+            'block_verify_certs/' . $this->generate_config_name('checkarchive'),
             new lang_string('checkarchive', 'block_verify_certs'),
             new lang_string('checkarchive_help', 'block_verify_certs') . $archivewarning,
-            1)
-        );
+            1
+        ));
 
-        $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('bypassverifyany'),
+        $settings->add(new admin_setting_configcheckbox(
+            'block_verify_certs/' . $this->generate_config_name('bypassverifyany'),
             new lang_string('bypassverifyany', 'block_verify_certs'),
             new lang_string('bypassverifyany_help', 'block_verify_certs'),
-            1)
-        );
+            1
+        ));
     }
 
     /**
@@ -188,7 +189,7 @@ class mod_customcert extends base {
         global $DB, $OUTPUT;
 
         // Recompletion is not installed. There is no archive for the custom cert records.
-        if (!$this->is_archive_available() ) {
+        if (!$this->is_archive_available()) {
             return null;
         }
 

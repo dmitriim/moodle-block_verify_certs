@@ -1,4 +1,4 @@
-<a href="https://github.com/dmitriim/moodle-block_verify_certs/actions"><img src="https://github.com/dmitriim/moodle-block_verify_certs/workflows/ci/badge.svg"></a>
+[![ci](https://github.com/dmitriim/moodle-block_verify_certs/actions/workflows/ci.yml/badge.svg?branch=MOODLE_404_STABLE)](https://github.com/dmitriim/moodle-block_verify_certs/actions/workflows/ci.yml?branch=MOODLE_404_STABLE)
 
 # Block Verify certificates #
 
@@ -22,7 +22,7 @@ The following git branches are currently supported:
 
 | Moodle version  | Branch            |
 |-----------------|-------------------|
-| Moodle 4.1 - 4.3 | MOODLE_401_STABLE |
+| Moodle 4.1 - 4.3| MOODLE_401_STABLE |
 | Moodle 4.4      | MOODLE_404_STABLE |
 
 ## Installing via uploaded ZIP file ##

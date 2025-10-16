@@ -28,7 +28,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_coursecertificate extends base {
-
     /**
      * Add site level settings for this certificate.
      *
