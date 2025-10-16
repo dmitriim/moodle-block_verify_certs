@@ -27,7 +27,6 @@ use block_verify_certs\local\block_verify_certs\certificates\base;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class verify_factory {
-
     /**
      * Get a list of certificates.
      *
@@ -68,7 +67,6 @@ class verify_factory {
         $result = $OUTPUT->notification(get_string('expiredcertificate', 'block_verify_certs'), 'error', false);
 
         foreach (self::get_installed_certificates() as $certificate) {
-
             if (!$certificate->is_enabled()) {
                 continue;
             }

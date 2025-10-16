@@ -30,7 +30,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_certificate extends base {
-
     /**
      * Check if the certificate is installed.
      *
@@ -61,18 +60,19 @@ class mod_certificate extends base {
             $archivewarning = $OUTPUT->notification(get_string('recompletionmissing', 'block_verify_certs'), 'warning', false);
         }
 
-        $settings->add(new admin_setting_configcheckbox('block_verify_certs/' . $this->generate_config_name('checkarchive'),
-                new lang_string('checkarchive', 'block_verify_certs'),
-                new lang_string('checkarchive_help', 'block_verify_certs') . $archivewarning,
-                1)
-        );
+        $settings->add(new admin_setting_configcheckbox(
+            'block_verify_certs/' . $this->generate_config_name('checkarchive'),
+            new lang_string('checkarchive', 'block_verify_certs'),
+            new lang_string('checkarchive_help', 'block_verify_certs') . $archivewarning,
+            1
+        ));
 
         $settings->add(new admin_setting_configcheckbox(
             'block_verify_certs/' . $this->generate_config_name('matchprintdate'),
-             new lang_string('matchprintdate', 'block_verify_certs'),
-             new lang_string('matchprintdate_help', 'block_verify_certs'),
-             1)
-        );
+            new lang_string('matchprintdate', 'block_verify_certs'),
+            new lang_string('matchprintdate_help', 'block_verify_certs'),
+            1
+        ));
     }
 
     /**
@@ -142,7 +142,7 @@ class mod_certificate extends base {
     protected function verify_certificate_archive(string $code): ?string {
         global $DB, $OUTPUT, $USER;
 
-        if (!$this->is_archive_available() ) {
+        if (!$this->is_archive_available()) {
             return null;
         }
 

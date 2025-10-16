@@ -30,7 +30,6 @@ use ReflectionClass;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base {
-
     /**
      * Protected constructor.
      */
@@ -92,8 +91,8 @@ abstract class base {
             'block_verify_certs/' . $this->generate_config_name('enabled'),
             new lang_string('enabled', 'block_verify_certs'),
             new lang_string('enabled_help', 'block_verify_certs'),
-            1)
-        );
+            1
+        ));
 
         // Any extra settings that certificate can have.
         $this->add_extra_settings($settings);
@@ -109,8 +108,8 @@ abstract class base {
             'block_verify_certs/' . $this->generate_config_name('displayinfo'),
             new lang_string('displayinfo', 'block_verify_certs'),
             new lang_string('displayinfo_help', 'block_verify_certs'),
-            1)
-        );
+            1
+        ));
     }
 
     /**
@@ -119,7 +118,6 @@ abstract class base {
      * @param admin_settingpage $settings
      */
     protected function add_extra_settings(admin_settingpage $settings): void {
-
     }
 
     /**
@@ -154,5 +152,4 @@ abstract class base {
      * @return bool
      */
     abstract public function is_installed(): bool;
-
 }

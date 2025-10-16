@@ -28,7 +28,6 @@ use context_system;
  * @covers \block_verify_certs\local\block_verify_certs\certificates\mod_customcert
  */
 final class mod_customcert_test extends \advanced_testcase {
-
     /**
      * Test verification logic.
      */

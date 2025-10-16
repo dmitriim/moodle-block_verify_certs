@@ -24,7 +24,6 @@ use block_verify_certs\verify_certificates_form;
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_verify_certs extends block_base {
-
     /**
      * Initializes class member variables.
      */
